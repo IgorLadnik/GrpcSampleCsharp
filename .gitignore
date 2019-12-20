@@ -3,3 +3,11 @@
 ################################################################################
 
 /.vs/GrpcSample
+/GrpcClient/bin
+/GrpcClient/obj
+/GrpcServer/bin
+/GrpcServer/obj
+/Helpers/GrpcClientHelper/bin/Debug/netcoreapp3.0
+/Helpers/GrpcClientHelper/obj
+/Helpers/GrpcServerHelper/bin/Debug/netcoreapp3.0
+/Helpers/GrpcServerHelper/obj

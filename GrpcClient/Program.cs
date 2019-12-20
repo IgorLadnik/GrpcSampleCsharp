@@ -13,6 +13,7 @@ namespace GrpcClient
         {
             Console.WriteLine("GrpcClient started.");
 
+            //var channelCredentials = new SslCredentials(File.ReadAllText(@"Certs\certificate.crt"));
             var channelCredentials = new SslCredentials(File.ReadAllText(@"./certs/ca.crt"),
                 new KeyCertificatePair(File.ReadAllText("./certs/client.crt"), File.ReadAllText(@"./certs/client.key")));
             var channel = new Channel($"localhost:{PORT}", channelCredentials);

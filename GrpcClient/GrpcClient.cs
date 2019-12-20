@@ -9,10 +9,11 @@ namespace GrpcClient
     {
         public string ClientId { get; }
 
-        private int messageId = 0;
+        public Client()
+        {
+            ClientId = $"{Guid.NewGuid()}";
+        }
 
-        public Client() => ClientId = $"{Guid.NewGuid()}";
-        
         public override AsyncDuplexStreamingCall<RequestMessage, ResponseMessage> CreateDuplexClient(Channel channel) =>
             new Messaging.MessagingClient(channel).CreateStreaming();
 
@@ -23,7 +24,7 @@ namespace GrpcClient
             return new RequestMessage
             {
                 ClientId = ClientId,
-                MessageId = $"{messageId++}", // $"{Guid.NewGuid()}",
+                MessageId = $"{Guid.NewGuid()}",
                 Type = MessageType.Ordinary,
                 Time = DateTime.UtcNow.Ticks,
                 Response = payload.Contains('?') ? ResponseType.Required : ResponseType.NotRequired,
@@ -31,6 +32,9 @@ namespace GrpcClient
             };
         }
 
-        public override string MessagePayload => Console.ReadLine();
+        public override string MessagePayload
+        {
+            get => Console.ReadLine();
+        }
     }
 }
