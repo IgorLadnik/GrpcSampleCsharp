@@ -38,39 +38,39 @@ namespace GrpcServer
             }
         }
 
-        public override string GetClientId(RequestMessage message) => message.ClientId;
+        public override string GetClientId(RequestMessage request) => request.ClientId;
 
-        public override ResponseMessage Process(RequestMessage message)
+        public override ResponseMessage Process(RequestMessage request)
         {
-            if (string.IsNullOrEmpty(message.Payload))
+            if (string.IsNullOrEmpty(request.Payload))
                 return null;
 
-            Logger.LogInformation($"Request:  {message}");
+            Logger.LogInformation($"Request:  {request}");
 
             //
             // Request message processing should be placed here
             //
 
-            if (message.Response != ResponseType.Required)
+            if (request.Response != ResponseType.Required)
                 return null;
 
-            var responseMessage = int.TryParse(message.MessageId, out var intMessageId)
+            var responseMessage = int.TryParse(request.MessageId, out var intMessageId)
                 ? _lstRespMsg[intMessageId % _lstRespMsg.Count]
                 : null;
 
             if (responseMessage == null)
                 return new ResponseMessage
                 {
-                    ClientId = message.ClientId,
-                    MessageId = message.MessageId,
-                    Type = message.Type,
+                    ClientId = request.ClientId,
+                    MessageId = request.MessageId,
+                    Type = request.Type,
                     Time = DateTime.UtcNow.Ticks,
                     Payload = "Error in MessageId",
                     Status = MessageStatus.Error
                 };
 
-            responseMessage.ClientId = message.ClientId;
-            responseMessage.MessageId = message.MessageId;
+            responseMessage.ClientId = request.ClientId;
+            responseMessage.MessageId = request.MessageId;
             responseMessage.Time = DateTime.UtcNow.Ticks;
             responseMessage.Status = MessageStatus.Processed;
 
