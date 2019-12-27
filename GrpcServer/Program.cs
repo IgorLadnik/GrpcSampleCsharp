@@ -25,7 +25,6 @@ namespace GrpcServer
                         options.Listen(IPAddress.Any, PORT,
                         listenOptions =>
                         {
-                            //listenOptions.UseHttps("grpcServer.pfx", "1511");
                             listenOptions.UseHttps("./certs/server.pfx", "1234");
                             listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
                         });

@@ -11,3 +11,5 @@
 /Helpers/GrpcClientHelper/obj
 /Helpers/GrpcServerHelper/bin/Debug/netcoreapp3.0
 /Helpers/GrpcServerHelper/obj
+/Helpers/GrpcClientHelper/bin/Debug/netcoreapp3.1
+/Helpers/GrpcServerHelper/bin/Debug/netcoreapp3.1

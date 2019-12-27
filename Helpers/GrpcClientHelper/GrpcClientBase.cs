@@ -13,28 +13,63 @@ namespace GrpcClientHelper
 
         public abstract string MessagePayload { get; }
 
-        public async Task Do(Channel channel, Action onConnection = null, Action onShuttingDown = null)
+        private CancellationTokenSource _cts = new CancellationTokenSource();
+        private Task _task;
+        private Channel _channel;
+        private Action _onShuttingDown;
+
+        protected GrpcClientBase(Channel channel) => _channel = channel;
+        
+        public void DoAsync(Action<TRequest> onSend, Action<TResponse> onReceive,
+                            Action onConnection = null, Action onShuttingDown = null)
         {
-            using (var duplex = CreateDuplexClient(channel))
+            _onShuttingDown = onShuttingDown;
+
+            _task = Task.Run(async () =>
             {
+                using var duplex = CreateDuplexClient(_channel);
+
                 onConnection?.Invoke();
 
                 var responseTask = Task.Run(async () =>
                 {
-                    while (await duplex.ResponseStream.MoveNext(CancellationToken.None))
-                        Console.WriteLine($"{duplex.ResponseStream.Current}");
+                    while (await duplex.ResponseStream.MoveNext(_cts.Token))
+                        onReceive(duplex.ResponseStream.Current);
                 });
 
                 string payload;
-                while (!string.IsNullOrEmpty(payload = MessagePayload))
-                    await duplex.RequestStream.WriteAsync(CreateMessage(payload));
+                while (!_cts.Token.IsCancellationRequested && 
+                       !string.IsNullOrEmpty(payload = MessagePayload))
+                {
+                    var request = CreateMessage(payload);
+                    onSend(request);
+                    await duplex.RequestStream.WriteAsync(request);
+                }
 
-                await duplex.RequestStream.CompleteAsync();
-            }
-
-            onShuttingDown?.Invoke();
-            await channel.ShutdownAsync();
+                TheEnd();
+            });
         }
+
+        private async void TheEnd() 
+        {
+            _onShuttingDown?.Invoke();
+            await _channel.ShutdownAsync();
+        }
+
+        public void Stop() => StopAsync().Wait(5000);
+
+        private async Task StopAsync() 
+        {
+            _cts.Cancel();
+            try
+            {
+                await _task;
+            }
+            catch (OperationCanceledException) 
+            {
+                TheEnd();
+            }
+        } 
     }
 }
 

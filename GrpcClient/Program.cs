@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Tasks;
 using Grpc.Core;
 
 namespace GrpcClient
@@ -9,38 +8,33 @@ namespace GrpcClient
     {
         const int PORT = 19019;
 
-        static async Task<int> Main(string[] args)
+        static readonly string nl = Environment.NewLine;
+
+        static void Main(string[] args)
         {
             Console.WriteLine("GrpcClient started.");
 
-            //var channelCredentials = new SslCredentials(File.ReadAllText(@"Certs\certificate.crt"));
             var channelCredentials = new SslCredentials(File.ReadAllText(@"./certs/ca.crt"),
-                new KeyCertificatePair(File.ReadAllText("./certs/client.crt"), File.ReadAllText(@"./certs/client.key")));
-            var channel = new Channel($"localhost:{PORT}", channelCredentials);
+                new KeyCertificatePair(File.ReadAllText("./certs/client.crt"), File.ReadAllText(@"./certs/client.key")));        
 
-            var nl = Environment.NewLine;
-            var orgTextColor = Console.ForegroundColor;
-
-            var client = new Client();
-            await client.Do(
-                channel, 
-                () =>
+            var client = new Client(new Channel($"localhost:{PORT}", channelCredentials));
+            client.DoAsync(
+                onSend: request => Console.WriteLine($"{nl}Request:  {request}"),
+                onReceive: response => Console.WriteLine($"Response: {response}"),
+                onConnection: () =>
                 {
+                    var orgTextColor = Console.ForegroundColor;
                     Console.Write($"Connected to server.{nl}ClientId = ");
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.Write($"{client.ClientId}");
                     Console.ForegroundColor = orgTextColor;
-                    Console.WriteLine($".{nl}Enter string message to server.{nl}" +
-                        $"You will get response if your message will contain question mark '?'.{nl}" +
-                        $"Enter empty message to quit.{nl}");
+                    Console.WriteLine($".{nl}Press any key to quit...{nl}");
                 },
-                () => Console.WriteLine("Shutting down...")
+                onShuttingDown: () => Console.WriteLine("Shutting down...")
             );
 
-            Console.WriteLine("Press any key to exit...");
             Console.ReadKey();
-
-            return 0;
+            client.Stop();
         }
     }
 }

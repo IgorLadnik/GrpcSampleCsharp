@@ -1,0 +1,72 @@
+[
+    {
+        "response": {
+            "messageId": "0",
+            "type": "MESSAGETYPE_IMPORTANT",
+            "payload": "aaa"
+        }
+    },
+    {
+        "response": {
+            "messageId": "1",
+            "type": "MESSAGETYPE_ORDINARY",
+            "payload": "bbb"
+        }
+    },
+    {
+        "response": {
+            "messageId": "2",
+            "type": "MESSAGETYPE_ORDINARY",
+            "payload": "ccc"
+        }
+    },
+    {
+        "response": {
+            "messageId": "3",
+            "type": "MESSAGETYPE_ORDINARY",
+            "payload": "ddd"
+        }
+    },
+    {
+        "response": {
+            "messageId": "4",
+            "type": "MESSAGETYPE_ORDINARY",
+            "payload": "eee"
+        }
+    },
+    {
+        "response": {
+            "messageId": "5",
+            "type": "MESSAGETYPE_ORDINARY",
+            "payload": "fff"
+        }
+    },
+    {
+        "response": {
+            "messageId": "6",
+            "type": "MESSAGETYPE_ORDINARY",
+            "payload": "ggg"
+        }
+    },
+    {
+        "response": {
+            "messageId": "7",
+            "type": "MESSAGETYPE_ORDINARY",
+            "payload": "hhh"
+        }
+    },
+    {
+        "response": {
+            "messageId": "8",
+            "type": "MESSAGETYPE_ORDINARY",
+            "payload": "iii"
+        }
+    },
+    {
+        "response": {
+            "messageId": "9",
+            "type": "MESSAGETYPE_ORDINARY",
+            "payload": "jjj"
+        }
+    }
+ ]

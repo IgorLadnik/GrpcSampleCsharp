@@ -61,7 +61,7 @@ namespace GrpcServerHelper
             {
                 if (Filter(subscriber, message))
                 {
-                    Logger.LogInformation($"Sending: {message}");
+                    Logger.LogInformation($"Response: {message}");
                     await subscriber.Subscriber.WriteAsync(message);
                 }
 
